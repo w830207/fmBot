@@ -1,14 +1,15 @@
 import os
 import telegram
 from flask import Flask, request
-from telegram.ext import Dispatcher, MessageHandler, Filters
+from telegram.ext import Dispatcher, MessageHandler, Filters, Updater, CommandHandler
 
 # Initial Flask app
 app = Flask(__name__)
 
 # 設定你的token
-bot = telegram.Bot(token=('5727672477:AAHBnh3c_GO0ap5AU3NyEaLJcVKE0xh2OpA'))
-bot.send_message(chat_id = '5441916130', text ='FM start')
+# bot = telegram.Bot(token=('5727672477:AAHBnh3c_GO0ap5AU3NyEaLJcVKE0xh2OpA'))
+# bot.send_message(chat_id = '5441916130', text ='FM start')
+updater = Updater('5727672477:AAHBnh3c_GO0ap5AU3NyEaLJcVKE0xh2OpA')
 
 @app.route('/hook', methods=['POST'])
 def webhook_handler():
@@ -27,11 +28,13 @@ def reply_handler(bot, update):
     update.message.reply_text(text)
 
 # New a dispatcher for bot
-dispatcher = Dispatcher(bot, None)
+# dispatcher = Dispatcher(bot, None)
 
 # Add handler for handling message, there are many kinds of message. For this handler, it particular handle text
 # message.
-dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
+updater.dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
+updater.start_polling()
+updater.idle()
 
 if __name__ == "__main__":
     # Running server
