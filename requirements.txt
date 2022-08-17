@@ -1,14 +1,14 @@
 certifi
 chardet
 click
-Flask==1.0.2
+Flask
 future
-gunicorn==19.9.0
+gunicorn
 idna
 itsdangerous
 jinja2
 markupsafe
-python-telegram-bot==12.7
+python-telegram-bot
 requests
 urllib3
 werkzeug
