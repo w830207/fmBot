@@ -5,6 +5,7 @@ from flask import Flask, request
 from telegram.ext import Dispatcher, MessageHandler, Filters, Updater, CommandHandler
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials as SAC
+import time
 
 # Initial Flask app
 app = Flask(__name__)
@@ -38,7 +39,6 @@ def help(update, context):
 def reply_handler(update, context):
     """自動回復"""
     text = update.message.text
-    id = update.message.from_user
     update.message.reply_text(text)
     try:
         scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
@@ -53,8 +53,13 @@ def reply_handler(update, context):
     number = 2
     while True:
         if worksheet.acell("A"+str(number)).value =="":
-            worksheet.update_acell("A"+str(number), id)
-            worksheet.update_acell("B"+str(number), text)
+            worksheet.update_acell("A"+str(number), time.ctime())
+            worksheet.update_acell("B"+str(number), update.message.from_user.id)
+            worksheet.update_acell("C"+str(number), update.message.from_user.first_name)
+            worksheet.update_acell("D"+str(number), update.message.from_user.last_name)
+            worksheet.update_acell("E"+str(number), update.message.from_user.username)
+            worksheet.update_acell("E"+str(number), update.message.from_user.is_bot)
+            worksheet.update_acell("F"+str(number), text)
             break
         else:
             number = number + 1
