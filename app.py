@@ -42,7 +42,7 @@ def reply_handler(update, context):
 updater.dispatcher.add_handler(CommandHandler("help", help))
 updater.dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
 updater.start_polling()
-updater.idle()
+# updater.idle()
 
 if __name__ == "__main__":
     # Running server
