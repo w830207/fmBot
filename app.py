@@ -1,10 +1,16 @@
 import os
+import sys
 import telegram
 from flask import Flask, request
 from telegram.ext import Dispatcher, MessageHandler, Filters, Updater, CommandHandler
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials as SAC
 
 # Initial Flask app
 app = Flask(__name__)
+
+GDriveJSON = 'fmtest-359707-28d1fe2042e6.json'
+GSpreadSheet = 'fm'
 
 # 設定你的token
 # bot = telegram.Bot(token=('5727672477:AAHBnh3c_GO0ap5AU3NyEaLJcVKE0xh2OpA'))
@@ -32,7 +38,27 @@ def help(update, context):
 def reply_handler(update, context):
     """自動回復"""
     text = update.message.text
+    id = update.message.from_user
     update.message.reply_text(text)
+    try:
+        scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+        key = SAC.from_json_keyfile_name(GDriveJSON, scope)
+        gc = gspread.authorize(key)
+        worksheet = gc.open(GSpreadSheet).worksheet("records")
+    except Exception as ex:
+        print('無法連線Google試算表', ex)
+        sys.exit(1)
+
+    # 從第二開始
+    number = 2
+    while True:
+        if worksheet.acell("A"+str(number)).value =="":
+            worksheet.update_acell("A"+str(number), id)
+            worksheet.update_acell("B"+str(number), text)
+            break
+        else:
+            number = number + 1
+
 
 # New a dispatcher for bot
 # dispatcher = Dispatcher(bot, None)
