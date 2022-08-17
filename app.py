@@ -25,6 +25,9 @@ def webhook_handler():
         dispatcher.process_update(update)
     return 'ok'
 
+def help(update, context):
+    """Send a message when the command /help is issued."""
+    update.message.reply_text('Help!')
 
 def reply_handler(update, context):
     """自動回復"""
@@ -36,6 +39,7 @@ def reply_handler(update, context):
 
 # Add handler for handling message, there are many kinds of message. For this handler, it particular handle text
 # message.
+updater.dispatcher.add_handler(CommandHandler("help", help))
 updater.dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
 updater.start_polling()
 updater.idle()
