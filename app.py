@@ -10,9 +10,6 @@ import time
 # Initial Flask app
 app = Flask(__name__)
 
-GDriveJSON = 'fmtest-359707-28d1fe2042e6.json'
-GSpreadSheet = 'fm'
-
 # 設定你的token
 # bot = telegram.Bot(token=('5727672477:AAHBnh3c_GO0ap5AU3NyEaLJcVKE0xh2OpA'))
 # bot.send_message(chat_id = '5441916130', text ='FM start')
@@ -39,8 +36,10 @@ def help(update, context):
 def reply_handler(update, context):
     """自動回復"""
     text = update.message.text
-    update.message.reply_text(text)
+    GDriveJSON = 'fmtest-359707-28d1fe2042e6.json'
+    GSpreadSheet = 'fm'
     try:
+        print('打開Google試算表')
         scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
         key = SAC.from_json_keyfile_name(GDriveJSON, scope)
         gc = gspread.authorize(key)
@@ -53,6 +52,7 @@ def reply_handler(update, context):
     number = 2
     while True:
         if worksheet.acell("A"+str(number)).value =="":
+            print('紀錄')
             worksheet.update_acell("A"+str(number), time.ctime())
             worksheet.update_acell("B"+str(number), update.message.from_user.id)
             worksheet.update_acell("C"+str(number), update.message.from_user.first_name)
@@ -63,6 +63,8 @@ def reply_handler(update, context):
             break
         else:
             number = number + 1
+
+    update.message.reply_text(text)
 
 
 # New a dispatcher for bot
