@@ -1,63 +1,46 @@
-import logging
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import os
-PORT = int(os.environ.get('PORT', 5000))
+import telegram
+from flask import Flask, request
+from telegram.ext import Dispatcher, MessageHandler, Filters, Updater, CommandHandler
 
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
+# Initial Flask app
+app = Flask(__name__)
 
-logger = logging.getLogger(__name__)
-TOKEN = '5727672477:AAHBnh3c_GO0ap5AU3NyEaLJcVKE0xh2OpA'
+# 設定你的token
+# bot = telegram.Bot(token=('5727672477:AAHBnh3c_GO0ap5AU3NyEaLJcVKE0xh2OpA'))
+# bot.send_message(chat_id = '5441916130', text ='FM start')
+updater = Updater('5727672477:AAHBnh3c_GO0ap5AU3NyEaLJcVKE0xh2OpA')
 
-# Define a few command handlers. These usually take the two arguments update and
-# context. Error handlers also receive the raised TelegramError object in error.
-def start(update, context):
-    """Send a message when the command /start is issued."""
-    update.message.reply_text('Hi!')
+@app.route("/")
+def hello_world():
+    return "hello world!"
 
-def help(update, context):
-    """Send a message when the command /help is issued."""
-    update.message.reply_text('Help!')
+@app.route('/hook', methods=['POST'])
+def webhook_handler():
+    """Set route /hook with POST method will trigger this method."""
+    if request.method == "POST":
+        update = telegram.Update.de_json(request.get_json(force=True), bot)
 
-def echo(update, context):
-    """Echo the user message."""
-    update.message.reply_text(update.message.text)
+        # Update dispatcher process that handler to process this message
+        dispatcher.process_update(update)
+    return 'ok'
 
-def error(update, context):
-    """Log Errors caused by Updates."""
-    logger.warning('Update "%s" caused error "%s"', update, context.error)
 
-def main():
-    """Start the bot."""
-    # Create the Updater and pass it your bot's token.
-    # Make sure to set use_context=True to use the new context based callbacks
-    # Post version 12 this will no longer be necessary
-    updater = Updater(TOKEN, use_context=True)
+def reply_handler(bot, update):
+    """自動回復"""
+    text = update.message.text
+    update.message.reply_text(text)
 
-    # Get the dispatcher to register handlers
-    dp = updater.dispatcher
+# New a dispatcher for bot
+# dispatcher = Dispatcher(bot, None)
 
-    # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("help", help))
+# Add handler for handling message, there are many kinds of message. For this handler, it particular handle text
+# message.
+updater.dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
+updater.start_polling()
+updater.idle()
 
-    # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(MessageHandler(Filters.text, echo))
-
-    # log all errors
-    dp.add_error_handler(error)
-
-    # Start the Bot
-    updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
-                          url_path=TOKEN)
-    updater.bot.setWebhook('https://p1660641295487419.herokuapp.com/' + TOKEN)
-
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
-
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    # Running server
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
