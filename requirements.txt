@@ -8,7 +8,7 @@ idna
 itsdangerous
 jinja2
 markupsafe
-python-telegram-bot
+python-telegram-bot==12.7
 requests
 urllib3
 werkzeug
