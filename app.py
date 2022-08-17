@@ -54,7 +54,7 @@ def reply_handler(update, context):
             print('紀錄')
             worksheet.update_acell("A"+str(number), update.message.date.ctime())
             worksheet.update_acell("B"+str(number), update.message.from_user.id)
-            worksheet.update_acell("C"+str(number), update.message.sender_chat.type)
+            worksheet.update_acell("C"+str(number), update.message.chat.type)
             worksheet.update_acell("D"+str(number), update.message.from_user.first_name)
             worksheet.update_acell("E"+str(number), update.message.from_user.last_name)
             worksheet.update_acell("F"+str(number), update.message.from_user.username)
