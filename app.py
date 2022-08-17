@@ -5,7 +5,6 @@ from flask import Flask, request
 from telegram.ext import Dispatcher, MessageHandler, Filters, Updater, CommandHandler
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials as SAC
-import time
 
 # Initial Flask app
 app = Flask(__name__)
@@ -53,13 +52,14 @@ def reply_handler(update, context):
     while True:
         if worksheet.acell("A"+str(number)).value =="":
             print('紀錄')
-            worksheet.update_acell("A"+str(number), time.ctime())
+            worksheet.update_acell("A"+str(number), update.message.date)
             worksheet.update_acell("B"+str(number), update.message.from_user.id)
-            worksheet.update_acell("C"+str(number), update.message.from_user.first_name)
-            worksheet.update_acell("D"+str(number), update.message.from_user.last_name)
-            worksheet.update_acell("E"+str(number), update.message.from_user.username)
-            worksheet.update_acell("E"+str(number), update.message.from_user.is_bot)
-            worksheet.update_acell("F"+str(number), text)
+            worksheet.update_acell("C"+str(number), update.message.sender_chat.type)
+            worksheet.update_acell("D"+str(number), update.message.from_user.first_name)
+            worksheet.update_acell("E"+str(number), update.message.from_user.last_name)
+            worksheet.update_acell("F"+str(number), update.message.from_user.username)
+            worksheet.update_acell("G"+str(number), update.message.from_user.is_bot)
+            worksheet.update_acell("H"+str(number), text)
             break
         else:
             number = number + 1
