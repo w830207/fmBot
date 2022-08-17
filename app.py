@@ -26,7 +26,7 @@ def webhook_handler():
     return 'ok'
 
 
-def reply_handler(bot, update):
+def reply_handler(update, context):
     """自動回復"""
     text = update.message.text
     update.message.reply_text(text)
