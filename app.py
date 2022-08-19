@@ -9,6 +9,7 @@ app = Flask(__name__)
 # 設定你的token
 bot = telegram.Bot(token=('5727672477:AAHBnh3c_GO0ap5AU3NyEaLJcVKE0xh2OpA'))
 bot.send_message(chat_id = '5441916130', text ='FM start')
+bot.send_sticker(chat_id = '5441916130',sticker ='AAMCAgADGQEAAwxi_yLWbTTR4BWOkAFSwUkPa65jSQACBQADwDZPE_lqX5qCa011AQAHbQADKQQ')
 updater = Updater('5727672477:AAHBnh3c_GO0ap5AU3NyEaLJcVKE0xh2OpA')
 
 @app.route("/")
