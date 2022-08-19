@@ -15,16 +15,6 @@ updater = Updater('5727672477:AAHBnh3c_GO0ap5AU3NyEaLJcVKE0xh2OpA')
 def hello_world():
     return "hello world!"
 
-@app.route('/hook', methods=['POST'])
-def webhook_handler():
-    """Set route /hook with POST method will trigger this method."""
-    if request.method == "POST":
-        update = telegram.Update.de_json(request.get_json(force=True), bot)
-
-        # Update dispatcher process that handler to process this message
-        dispatcher.process_update(update)
-    return 'ok'
-
 def help(update, context):
     """Send a message when the command /help is issued."""
     update.message.reply_text('Help!')
